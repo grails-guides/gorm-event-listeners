@@ -1,4 +1,4 @@
-package gorm.event.listeners
+package demo
 
 class UrlMappings {
 

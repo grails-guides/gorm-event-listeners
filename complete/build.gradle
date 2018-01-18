@@ -11,7 +11,7 @@ buildscript {
 }
 
 version "0.1"
-group "gorm.event.listeners"
+group "demo"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
