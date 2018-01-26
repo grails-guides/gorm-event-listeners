@@ -1,5 +1,8 @@
 package demo
 
+import grails.rest.Resource
+
+@Resource(uri = '/bookTag', readOnly = true)
 class BookTag {
 
     Book book
