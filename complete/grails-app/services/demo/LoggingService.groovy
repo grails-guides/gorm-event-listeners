@@ -16,7 +16,7 @@ class LoggingService {
         println "afterSave..."
         if (event.entityObject instanceof Book) {
             log.info "After book save..."
-            new Book(event: "Book saved", bookId: ((Book) event.entityObject).id).save()
+            new Audit(event: "Book saved", bookId: ((Book) event.entityObject).id).save()
         }
     }
 
@@ -24,7 +24,7 @@ class LoggingService {
     void afterUpdate(PostUpdateEvent event) {
         if (event.entityObject instanceof Book) {
             log.info "After book update..."
-            new Book(event: "Book saved", bookId: ((Book) event.entityObject).id).save()
+            new Audit(event: "Book saved", bookId: ((Book) event.entityObject).id).save()
         }
     }
 
@@ -32,7 +32,7 @@ class LoggingService {
     void beforeDelete(PreDeleteEvent event) {
         if (event.entityObject instanceof Book) {
             log.info "Before book delete..."
-            new Book(event: "Book saved", bookId: ((Book) event.entityObject).id).save()
+            new Audit(event: "Book saved", bookId: ((Book) event.entityObject).id).save()
         }
     }
 }
