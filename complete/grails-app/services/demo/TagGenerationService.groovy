@@ -68,8 +68,6 @@ class TagGenerationService {
             Tag tag = Tag.findOrCreateWhere(name: book.title).save()
             BookTag bookTag = BookTag.findByBookAndTag(book, tag)
 
-            log.info "BookTag: ${bookTag}"
-
             if(!bookTag) {
                 log.info "Saving BookTag for $book & $tag"
                 BookTag.create(book, tag)
@@ -89,9 +87,7 @@ class TagGenerationService {
 
         @Override
         void transactionCompletion(boolean successful) {
-            log.info "transactionCompletion"
             if (successful && !fired) {
-                log.info "firing..."
                 fired = true
 
                 BookTag.withNewTransaction handler

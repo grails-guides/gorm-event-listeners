@@ -11,8 +11,11 @@ import spock.lang.Specification
 
 class LoggingServiceSpec extends Specification implements GrailsUnitTest {
 
-    @Shared @AutoCleanup HibernateDatastore hibernateDatastore
-    @Shared PlatformTransactionManager transactionManager
+    @Shared
+    @AutoCleanup
+    HibernateDatastore hibernateDatastore
+    @Shared
+    PlatformTransactionManager transactionManager
 
     void setupSpec() {
         hibernateDatastore = applicationContext.getBean(HibernateDatastore)
@@ -26,22 +29,29 @@ class LoggingServiceSpec extends Specification implements GrailsUnitTest {
 
 
     @Override
-    Closure doWithSpring() {{->
-        loggingService(LoggingService)
-        datastore(HibernateDatastore, Book)
-    }}
+    Closure doWithSpring() {
+        { ->
+            loggingService(LoggingService)
+            datastore(HibernateDatastore, [Book, Audit])
+        }
+    }
 
     @Rollback
     @Transactional
     def "loggingService.afterSave is called after book is saved"() {
         given:
-        LoggingService loggingService = applicationContext.getBean(LoggingService)
+        assert Audit.count() == 0
 
         when:
-        new Book(title: "ABC", author: "123", pages: 123).save(flush: true)
+        Book book = new Book(title: "ABC", author: "123", pages: 123).save(flush: true)
         then:
-        1 * loggingService.afterSave(_)
+        Audit.count() == 1
+
+        and:
+        Audit audit = Audit.first()
+
+        audit.event == "Book saved"
+        audit.bookId == book.id
+
     }
-
-
 }
