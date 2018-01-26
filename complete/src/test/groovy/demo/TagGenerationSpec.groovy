@@ -9,7 +9,7 @@ import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
 
-class LoggingServiceSpec extends Specification implements GrailsUnitTest {
+class TagGenerationSpec  extends Specification implements GrailsUnitTest {
 
     @Shared
     @AutoCleanup
@@ -31,27 +31,28 @@ class LoggingServiceSpec extends Specification implements GrailsUnitTest {
     @Override
     Closure doWithSpring() {
         { ->
-            loggingService(LoggingService)
-            datastore(HibernateDatastore, [Book, Audit])
+            tagGenerationService TagGenerationService
+            datastore(HibernateDatastore, [Book, Tag, BookTag])
         }
     }
 
     @Rollback
     @Transactional
-    def "audit is saved after book is saved"() {
+    def "tag and bookTag are saved after book is saved"() {
         given:
-        assert Audit.count() == 0
+        assert BookTag.count() == 0
 
         when:
         Book book = new Book(title: "ABC", author: "123", pages: 123).save(flush: true)
         then:
-        Audit.count() == 1
+        BookTag.count() == 1
 
         and:
-        Audit audit = Audit.first()
+        BookTag bookTag = BookTag.first()
 
-        audit.event == "Book saved"
-        audit.bookId == book.id
+        bookTag.tag.name == book.title
+        bookTag.book.id == book.id
 
     }
+
 }
