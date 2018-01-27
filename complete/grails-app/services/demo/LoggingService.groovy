@@ -2,7 +2,9 @@ package demo
 
 import grails.events.annotation.gorm.Listener
 import grails.gorm.transactions.Transactional
-import org.grails.datastore.mapping.engine.event.*
+import org.grails.datastore.mapping.engine.event.PostInsertEvent
+import org.grails.datastore.mapping.engine.event.PostUpdateEvent
+import org.grails.datastore.mapping.engine.event.PreDeleteEvent
 
 
 @Transactional

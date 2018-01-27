@@ -23,5 +23,11 @@ class LoggingServiceUnitSpec extends Specification implements ServiceUnitTest<Lo
 
         then:
         Audit.count() == 1
+
+        and:
+        Audit audit = Audit.first()
+
+        audit.event == "Book saved"
+        audit.bookId == book.id
     }
 }
