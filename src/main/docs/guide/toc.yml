@@ -8,5 +8,7 @@ runningTheApp:
   title: Running the Application
 listeners:
   title: Creating Listeners
+entityAccess:
+  title: Setting/getting Properties
 testing:
   title: Testing

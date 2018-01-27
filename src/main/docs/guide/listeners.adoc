@@ -60,4 +60,3 @@ Now, if we make a GET request to `/audit`, we should see the newly created `Audi
   }
 ]
 ----
-

@@ -1,0 +1,23 @@
+Often you will want to access and even modify properties on a domain object within an event listener. For example, you may wish to encode a user's password prior to saving to the database, or check the value of a string property against a blacklist of forbidden words/characters. GORM events provide an `entityAccess` object which allows you to make get and set properties on the entity that triggered the event.
+
+We'll see how we can use `entityAccess` in our next GORM event listener. We need to generate and assign a serial number to instances of our `Book` domain class. For this sample, the serial number will simply be a random, all-caps string, prefixed by the first few characters of the book's title. For example, a book with a title of `Groovy in Action` might have a serial number of `GROO-WKVLEQEDK`.
+
+Create a new Grails service, called `SerialNumberService`:
+
+[source,bash]
+----
+~ grails create-service demo.SerialNumberService
+----
+
+Edit the service as shown below, adding a single `@Listener` method:
+
+[source,groovy]
+.grails-app/services/demo/SerialNumberService.groovy
+----
+include::{sourceDir}/grails-app/services/demo/SerialNumberService.groovy[]
+----
+<1> We retrieve the `title` property from the domain object using the `event.entityAccess.getProperty()` method. We use the `take` method to safely grab the first 4 characters from the title (`take` will not throw an `IndexOutOfBoundsException` if the string length is shorter than the desired range)
+<2> To set the `serialNumber` property on the domain object, we use the `event.entityAccess.setProperty()` method.
+
+WARNING: You may wonder why couldn't simply cast the `event.entityObject` as a `Book` (as we did in the previous listener) and then set the `serialNumber` property directly. The reason for avoiding that approach here is that the direct assignment would itself trigger another event, potentially causing the same event listener to fire multiple times.  By using the `entityAccess` object, any changes we make will be synchronized with the current persistence session, and will be saved at the same time as the original object.
+

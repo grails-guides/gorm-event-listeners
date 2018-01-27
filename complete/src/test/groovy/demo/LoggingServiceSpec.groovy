@@ -1,49 +1,26 @@
 package demo
 
-import grails.gorm.transactions.Rollback
 import grails.gorm.transactions.Transactional
-import org.grails.orm.hibernate.HibernateDatastore
-import org.grails.testing.GrailsUnitTest
-import org.springframework.transaction.PlatformTransactionManager
-import spock.lang.AutoCleanup
-import spock.lang.Shared
+import grails.testing.gorm.DataTest
+import grails.testing.services.ServiceUnitTest
+import org.grails.datastore.mapping.engine.event.PostInsertEvent
 import spock.lang.Specification
 
-class LoggingServiceSpec extends Specification implements GrailsUnitTest {
-
-    @Shared
-    @AutoCleanup
-    HibernateDatastore hibernateDatastore
-    @Shared
-    PlatformTransactionManager transactionManager
+class LoggingServiceSpec extends Specification implements ServiceUnitTest<LoggingService>, DataTest {
 
     void setupSpec() {
-        hibernateDatastore = applicationContext.getBean(HibernateDatastore)
-        transactionManager = hibernateDatastore.getTransactionManager()
+        mockDomains Book, Audit
     }
 
-    @Override
-    Set<String> getIncludePlugins() {
-        return ["eventBus"] as Set
-    }
-
-
-    @Override
-    Closure doWithSpring() {
-        { ->
-            loggingService(LoggingService)
-            datastore(HibernateDatastore, [Book, Audit])
-        }
-    }
-
-    @Rollback
     @Transactional
-    def "audit is saved after book is saved"() {
+    void "test after save"(){
         given:
-        assert Audit.count() == 0
+        Book book = new Book(title: 'abc', author: 'abc', pages: 1).save()
+        PostInsertEvent event = new PostInsertEvent(dataStore, book)
 
         when:
-        Book book = new Book(title: "ABC", author: "123", pages: 123).save(flush: true)
+        service.afterSave(event)
+
         then:
         Audit.count() == 1
 
@@ -52,6 +29,5 @@ class LoggingServiceSpec extends Specification implements GrailsUnitTest {
 
         audit.event == "Book saved"
         audit.bookId == book.id
-
     }
 }

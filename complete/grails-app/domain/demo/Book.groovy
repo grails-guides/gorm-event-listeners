@@ -8,7 +8,9 @@ class Book {
     String author
     String title
     Integer pages
+    String serialNumber
 
     static constraints = {
+        serialNumber nullable: true
     }
 }

@@ -9,7 +9,7 @@ import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
 
-class TagGenerationSpec  extends Specification implements GrailsUnitTest {
+class TagGenerationSpec extends Specification implements GrailsUnitTest {
 
     @Shared
     @AutoCleanup

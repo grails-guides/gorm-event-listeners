@@ -6,7 +6,6 @@ import org.grails.datastore.mapping.engine.event.PostInsertEvent
 import org.grails.datastore.mapping.engine.event.PostUpdateEvent
 import org.grails.datastore.mapping.engine.event.PreDeleteEvent
 
-
 @Transactional
 class LoggingService {
 
