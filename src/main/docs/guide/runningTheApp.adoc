@@ -1,1 +1,35 @@
-include::{commondir}/common-runapp.adoc[]
+Start the application using `./gradlew bootRun` or `./grailsw run-app`.
+
+[source,bash]
+----
+~ ./gradlew bootRun
+----
+
+Using a REST client, make a POST request to save a `Book` instance. For example, using `curl`:
+
+[source,bash]
+----
+~ curl -X "POST" "http://localhost:8080/book" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+  "title": "Definitive Guide to Grails",
+  "pages": "400",
+  "author": "Jeff Brown"
+}'
+----
+
+Make a GET request to verify that a book was inserted in the database:
+
+[source,bash]
+----
+~ curl "http://localhost:8080/book"
+
+[
+  {
+    "id": 1,
+    "title": "Definitive Guide to Grails",
+    "pages": 400,
+    "author": "Jeff Brown"
+  }
+]
+----

@@ -8,7 +8,7 @@ class BookTag {
     Book book
     Tag tag
 
-    static BookTag create(Book book, Tag tag, boolean flush = false) {
+    static BookTag create(Book book, Tag tag, boolean flush = false) { //<1>
         new BookTag(book: book, tag: tag).save(flush: flush)
     }
 

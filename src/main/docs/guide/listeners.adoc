@@ -1,0 +1,63 @@
+Our first listener will save `Audit` instances whenever a new `Book` is created, as well as when a book is updated and deleted.
+
+Create a new Grails service, named `LoggingService`:
+
+[source,bash]
+----
+~ grails create-service demo.LoggingService
+----
+
+TIP: A Grails service is not required in order to write an event listener. You could place the same methods we are about to write in a Groovy class under `src/main/groovy`. However, the listener does need to be wired into the Spring context, so we would have to do that manually if we did not use a Grails service. We will use Grails services for convenience.
+
+Edit `LoggingService` as shown below:
+
+[source,groovy]
+.grails-app/services/demo/LoggingService.groovy
+----
+include::{sourceDir}/grails-app/services/demo/LoggingService.groovy[]
+----
+<1> The `@Listener` annotation will transform this method into a GORM event listener. When GORM fires a persistence event, any methods marked `@Listener` (and with the appropriate method signature) will be called. The annotation takes a value argument, which can be either a single domain class or a list of domain classes for which to "listen" - in this case, only events fired for `Book` instances will trigger this method.
+<2> The method signature indicates what event this method is interested in - e.g., an argument of type `PostInsertEvent` means this method will only be called after an object is saved.
+<3> We can access the domain object that fired the event, via the `event.entityObject`. In order to access the id of this object, we cast it as `Book` and obtain the id, which we use as the `bookId` property of our `Audit` instance.
+<4> Again, the method signature here indicates that this method will be called for events of type `PostUpdateEvent` - after an object is updated.
+<5> The final methods listens for `PreDeleteEvent` - note that obviously there is not a "post-delete event", as there would be no object for which to fire an event after a deletion.
+
+Restart the application, and repeat the POST request from above:
+
+[source,bash]
+----
+~ curl -X "POST" "http://localhost:8080/book" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+  "title": "Definitive Guide to Grails",
+  "pages": "400",
+  "author": "Jeff Brown"
+}'
+
+~ curl "http://localhost:8080/book"
+
+[
+  {
+    "id": 1,
+    "title": "Definitive Guide to Grails",
+    "pages": 400,
+    "author": "Jeff Brown"
+  }
+]
+----
+
+Now, if we make a GET request to `/audit`, we should see the newly created `Audit` instance as well:
+
+[source,bash]
+----
+~ curl "http://localhost:8080/audit"
+
+[
+  {
+    "id": 1,
+    "bookId": 1,
+    "event": "Book saved"
+  }
+]
+----
+

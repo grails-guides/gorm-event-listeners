@@ -2,7 +2,7 @@ package demo
 
 import grails.rest.Resource
 
-@Resource(uri = '/audit', readOnly = true)
+@Resource(uri = '/audit', readOnly = true) //<1>
 class Audit {
 
     String event

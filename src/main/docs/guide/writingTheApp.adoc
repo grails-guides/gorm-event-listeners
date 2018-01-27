@@ -1,1 +1,50 @@
-TODO: Complete the guide
+Our application's domain model is fairly simple. We will create four domain classes, `Book`, `Tag`, `BookTag`, and `Audit`. The roles of these classes are described in the table below:
+
+.Domain Classes
+|===
+|Class |Role
+
+|Book
+|Core domain model
+
+|Tag
+|Metadata about a `Book`
+
+|BookTag
+|"Join" class to associate a `Book` and a `Tag` (we are avoiding use of `hasMany` in this sample app)
+
+|Audit
+|Log messages to record persistence events for a given `Book`
+|===
+
+Create the domain classes and edit them as shown below:
+
+[source,groovy]
+.grails-app/domain/demo/Book.groovy
+----
+include::{sourceDir}/grails-app/domain/demo/Book.groovy[]
+----
+<1> We are using the `@Resource` annotation to expose a RESTful API for this domain class.
+
+[source,groovy]
+.grails-app/domain/demo/Tag.groovy
+----
+include::{sourceDir}/grails-app/domain/demo/Tag.groovy[]
+----
+<1> Note the `readOnly` argument to the `@Resource` annotation, which means that the generated RESTful controller will not expose any endpoints for `POST`, `PUT` or `DELETE` requests.
+
+[source,groovy]
+.grails-app/domain/demo/BookTag.groovy
+----
+include::{sourceDir}/grails-app/domain/demo/BookTag.groovy[]
+----
+<1> We provide a static convenience method to make it simpler to create a `BookTag` instance for a given `Book` and `Tag`.
+
+[source,groovy]
+.grails-app/domain/demo/Audit.groovy
+----
+include::{sourceDir}/grails-app/domain/demo/Audit.groovy[]
+----
+<1> Again we are using the `readOnly` argument to expose only "read" endpoints (e.g., "list" and "show") for this domain class.
+
+
