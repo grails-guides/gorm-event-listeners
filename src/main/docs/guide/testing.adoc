@@ -1,0 +1,61 @@
+== Unit Testing
+
+The simplest form of test for our listener methods is to simply call them and verify that the expected behavior was executed. This is quite trivial thanks to the excellent http://testing.grails.org[testing support] in Grails.
+
+If you created your Grails services using the `create-service` command, you should already see a stubbed-out test under `src/test/groovy/`.
+
+```
+demo/LoggingServiceSpec.groovy
+demo/SerialNumberServiceSpec.groovy
+demo/TagGenerationServiceSpec.groovy
+```
+
+Edit the first one of these test classes, `LoggingServiceSpec`, as shown below.
+
+[source,groovy]
+.src/test/groovy/demo/LoggingServiceSpec.groovy
+----
+include::{sourceDir}/src/test/groovy/demo/LoggingServiceSpec.groovy[]
+----
+<1> A
+<2> B
+<3> C
+<4> D
+<5> E
+<6> F
+
+The next test, for our `SerialNumberService`, will be essentially identical to the previous one. Edit `SerialNumberServiceSpec` as shown below.
+
+[source,groovy]
+.src/test/groovy/demo/SerialNumberServiceSpec.groovy
+----
+include::{sourceDir}/src/test/groovy/demo/SerialNumberServiceSpec.groovy[]
+----
+
+Run these tests using `./gradlew test` or `./grailsw test-app` (or using your IDE, if you prefer):
+
+[source,bash]
+----
+~ ./gradlew test
+:test
+
+BUILD SUCCESSFUL
+----
+
+== Integration Testing
+
+The previous two tests verify that our listener methods perform the expected functions, however, they do not test whether these functions take place when an event is triggered for our `Book` domain class. Arguably, a test for correct handling of events would qualify as an *integration test*, however we can in fact wire together the GORM event listener tooling without the expense of a full-fledged integration test (which would require the entire application to start up in order to execute the test).
+
+Let's write a more involved "integration-style" test for our `TagGenerationService`. Edit the file `TagGenerationServiceSpec` as shown below:
+
+[source,groovy]
+.src/test/groovy/demo/TagGenerationServiceSpec.groovy
+----
+include::{sourceDir}/src/test/groovy/demo/TagGenerationServiceSpec.groovy[]
+----
+<1> A
+<2> B
+<3> C
+<4> D
+<5> E
+

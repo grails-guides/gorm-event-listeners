@@ -1,0 +1,15 @@
+Our final listener will illustrate a couple more features/capabilities. We want to create `Tag` instances for each `Book` added to the database (for now, we simply create a single `Tag` with a value of the `title` of a given `Book`, however the system is designed so that multiple tags could be assigned to any book).  In order to associate a `Book` and a `Tag`, we will create instances of our `BookTag` domain class.
+
+TIP: This method of creating associations is an alternative to using the `hasMany` collections on domain classes. In this sample app, `hasMany` would probably serve our purposes, but in large apps there can be performance issues associated with using `hasMany` collections. The "join table" class approach used here is more scalable, and is similar to the approach used in Grails plugins like Spring Security Core.
+
+Create another Grails service, named `TagGenerationService`. Edit as shown below:
+
+[source,groovy]
+.grails-app/services/demo/TagGenerationService.groovy
+----
+include::{sourceDir}/grails-app/services/demo/TagGenerationService.groovy[]
+----
+<1> A
+<2> A
+<3> A
+<4> A

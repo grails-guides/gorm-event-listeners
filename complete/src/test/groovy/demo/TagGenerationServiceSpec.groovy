@@ -9,27 +9,27 @@ import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
 
-class TagGenerationSpec extends Specification implements GrailsUnitTest {
+class TagGenerationServiceSpec extends Specification implements GrailsUnitTest { //<1>
 
     @Shared
     @AutoCleanup
-    HibernateDatastore hibernateDatastore
+    HibernateDatastore hibernateDatastore //<2>
     @Shared
     PlatformTransactionManager transactionManager
 
     void setupSpec() {
-        hibernateDatastore = applicationContext.getBean(HibernateDatastore)
+        hibernateDatastore = applicationContext.getBean(HibernateDatastore) //<2>
         transactionManager = hibernateDatastore.getTransactionManager()
     }
 
     @Override
     Set<String> getIncludePlugins() {
-        return ["eventBus"] as Set
+        return ["eventBus"] as Set //<3>
     }
 
 
     @Override
-    Closure doWithSpring() {
+    Closure doWithSpring() { //<4>
         { ->
             tagGenerationService TagGenerationService
             datastore(HibernateDatastore, [Book, Tag, BookTag])
@@ -38,7 +38,7 @@ class TagGenerationSpec extends Specification implements GrailsUnitTest {
 
     @Rollback
     @Transactional
-    def "tag and bookTag are saved after book is saved"() {
+    def "tag and bookTag are saved after book is saved"() { //<5>
         given:
         assert BookTag.count() == 0
 

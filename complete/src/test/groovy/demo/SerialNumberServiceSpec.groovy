@@ -8,7 +8,7 @@ import spock.lang.Specification
 class SerialNumberServiceSpec extends Specification implements ServiceUnitTest<SerialNumberService>, DataTest {
 
     def setupSpec() {
-        mockDomains Book
+        mockDomain Book
     }
 
     def cleanup() {
