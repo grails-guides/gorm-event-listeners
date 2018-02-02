@@ -1,5 +1,12 @@
 Our final listener will illustrate a couple more features/capabilities. We want to create `Tag` instances for each `Book` added to the database (for now, we simply create a single `Tag` with a value of the `title` of a given `Book`, however the system is designed so that multiple tags could be assigned to any book).  In order to associate a `Book` and a `Tag`, we will create instances of our `BookTag` domain class.
 
+Here are the listeners we will need:
+
+1. After a save, we will generate a Tag for its title, and `BookTag` instance for the new book.
+2. After an update, we will generate a `Tag` and `BookTag` instance for the new book (if one does not already exist)
+3. Prior to an update, if the title of the book has changed, we will delete the `BookTag` instance (but not the `Tag` itself)
+4. Prior to deletion, we will delete any associated `BookTag` instances.
+
 TIP: This method of creating associations is an alternative to using the `hasMany` collections on domain classes. In this sample app, `hasMany` would probably serve our purposes, but in large apps there can be performance issues associated with using `hasMany` collections. The "join table" class approach used here is more scalable, and is similar to the approach used in Grails plugins like Spring Security Core.
 
 Create another Grails service, named `TagGenerationService`. Edit as shown below:
@@ -9,7 +16,8 @@ Create another Grails service, named `TagGenerationService`. Edit as shown below
 ----
 include::{sourceDir}/grails-app/services/demo/TagGenerationService.groovy[]
 ----
-<1> A
-<2> A
-<3> A
-<4> A
+<1> Since the same logic applies for both update and insert events, we've moved the code to a private method. Within this method, we generate a `Tag` instance if necessary (using the `findOrSaveWhere` method), and create a `BookTag` instance for the persisting object using the `BookTag.create` factory method.
+<2> The `beforeUpdate` listener will check whether the title the book is "dirty" (meaning the property has been changed). If so, we will delete the `BookTag` instance that corresponds with the title value (a new one will be created in the `afterUpdate` listener).
+<3> The `isDirty` method allows us to check for properties that have been changed on the persisted object.
+<4> We want to look up the tag that corresponds to the "old" title property. We can use the `getPersistentValue` method to retrieve property values that are currently in the database, prior to update.
+

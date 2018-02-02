@@ -26,7 +26,7 @@ class TagGenerationService {
         Book book = Book.load(((Book) event.entityObject).id) //<2>
 
         if (book.isDirty('title')) { //<3>
-            Tag tag = Tag.findOrCreateWhere(name: book.getPersistentValue('title')) //<4>
+            Tag tag = Tag.findOrSaveWhere(name: book.getPersistentValue('title')) //<4>
             BookTag bookTag = BookTag.findByBookAndTag(book, tag)
             if (bookTag) bookTag.delete()
         }
@@ -41,7 +41,7 @@ class TagGenerationService {
 
     private static saveBookTag(AbstractPersistenceEvent event) { //<1>
         Book book = Book.load(((Book) event.entityObject).id)
-        Tag tag = Tag.findOrCreateWhere(name: book.title).save()
+        Tag tag = Tag.findOrSaveWhere(name: book.title)
         BookTag bookTag = BookTag.findByBookAndTag(book, tag)
 
         if (!bookTag) {
