@@ -4,6 +4,7 @@ import grails.gorm.transactions.Transactional
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import org.grails.datastore.mapping.engine.event.PostInsertEvent
+import org.springframework.test.annotation.Rollback
 import spock.lang.Specification
 
 class LoggingServiceSpec extends Specification implements ServiceUnitTest<LoggingService>, DataTest { //<1>
@@ -12,7 +13,7 @@ class LoggingServiceSpec extends Specification implements ServiceUnitTest<Loggin
         mockDomains Book, Audit //<2>
     }
 
-    @Transactional
+    @Rollback
     void "test after save"(){
         given:
         Book book = new Book(title: 'abc', author: 'abc', pages: 1).save() //<3>

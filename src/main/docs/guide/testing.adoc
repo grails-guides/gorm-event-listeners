@@ -17,12 +17,12 @@ Edit the first one of these test classes, `LoggingServiceSpec`, as shown below.
 ----
 include::{sourceDir}/src/test/groovy/demo/LoggingServiceSpec.groovy[]
 ----
-<1> A
-<2> B
-<3> C
-<4> D
-<5> E
-<6> F
+<1> Grails has already created a test class that implements the `ServiceUnitTets` trait, however we will need to add the `DataTest` trait as well since we will be using GORM features
+<2> The `DataTest` trait provides a `mockDomains` method, which we supply with the domain classes we intend to use in our test.
+<3> Because `DataTest` has wired up GORM for us, we can simply create a new instance of our `Book` class.
+<4> We can now use the `Book` instance to set up a `PostInsertEvent` (note that the `dataStore` property is available in our test, again as a result of implementing the `DataTest` trait).
+<5> We can now call the `afterSave` method, passing in the event.
+<6> We now can assert that the expected `Audit` instance was created.
 
 The next test, for our `SerialNumberService`, will be essentially identical to the previous one. Edit `SerialNumberServiceSpec` as shown below.
 
@@ -46,16 +46,18 @@ BUILD SUCCESSFUL
 
 The previous two tests verify that our listener methods perform the expected functions, however, they do not test whether these functions take place when an event is triggered for our `Book` domain class. Arguably, a test for correct handling of events would qualify as an *integration test*, however we can in fact wire together the GORM event listener tooling without the expense of a full-fledged integration test (which would require the entire application to start up in order to execute the test).
 
-Let's write a more involved "integration-style" test for our `TagGenerationService`. Edit the file `TagGenerationServiceSpec` as shown below:
+Let's write a more involved "integration-style" test for our `TagGenerationService`. We will wire together just the parts of the application that we need to verify that our listeners are being called when we expect. In addition to GORM, we need the Spring context to include our `TagGenerationService`, and we need to make sure the event handling system is up and running.
+
+Create the file `TagGenerationServiceSpec` under `src/test/groovy/demo`, and edit the contents as shown below:
 
 [source,groovy]
 .src/test/groovy/demo/TagGenerationServiceSpec.groovy
 ----
 include::{sourceDir}/src/test/groovy/demo/TagGenerationServiceSpec.groovy[]
 ----
-<1> A
-<2> B
-<3> C
-<4> D
-<5> E
+<1> Because we will bbe wiring up GORM, thw Spring context and the event system ourselves, we will simply implement the basic `GrailsUnitTest` trait rather than the more specific `ServiceUnitTest` trait.
+<2> We declare a `Shared` and `AutoCleanup` property for our datastore. In the `setupSpec` method, we obtain the `HibernateDatastore` instance contained within the `applicationContext` (provided by the `GrailsUnitTest` trait). We also set the `transactionManager` shared property we defined in our spec.
+<3> In order to enable the event system, we override the `getIncludePlugins` method to return the `eventBus` plugin. This will pull in any Spring configuration provided by the plugin into our test.
+<4> In our overridden `doWithSpring` method, we create the Spring beans for our `tagGenerationService` as well as our `dataStore`, instantiating the latter with a list of domain classes we need for our test. This will configure our service and GORM datastore in the Spring context of our test.
+<5> Our test is now trivial. Like in the earlier tests, we create and save an instance of `Book`. However, since the event system is up and running, the listener methods in `TagGenerationService` will be called just as in the running application. We simply verify that the generated domain objects (`BookTag` and `Tag`) match our expectations.
 

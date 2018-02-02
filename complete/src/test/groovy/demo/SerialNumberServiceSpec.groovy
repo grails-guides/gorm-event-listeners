@@ -3,6 +3,7 @@ package demo
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import org.grails.datastore.mapping.engine.event.PreInsertEvent
+import org.springframework.test.annotation.Rollback
 import spock.lang.Specification
 
 class SerialNumberServiceSpec extends Specification implements ServiceUnitTest<SerialNumberService>, DataTest {
@@ -14,6 +15,7 @@ class SerialNumberServiceSpec extends Specification implements ServiceUnitTest<S
     def cleanup() {
     }
 
+    @Rollback
     void "test serial number generated"() {
         given:
         Book book = new Book(title: 'abc', author: 'abc', pages: 100)
