@@ -6,6 +6,7 @@ gettingStarted:
   howto: How to complete the guide
 writingTheApp:
   title: Writing the Application
+  dataServices: Data Services
 runningTheApp:
   title: Running the Application
 listeners:
