@@ -1,5 +1,8 @@
-package gorm.event.listeners
+package demo
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class BootStrap {
 
     def init = { servletContext ->
