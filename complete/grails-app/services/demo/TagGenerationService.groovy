@@ -1,51 +1,77 @@
 package demo
 
 import grails.events.annotation.gorm.Listener
-import grails.gorm.transactions.Transactional
+import groovy.transform.CompileStatic
 import org.grails.datastore.mapping.engine.event.AbstractPersistenceEvent
 import org.grails.datastore.mapping.engine.event.PostInsertEvent
 import org.grails.datastore.mapping.engine.event.PostUpdateEvent
 import org.grails.datastore.mapping.engine.event.PreDeleteEvent
+import org.grails.datastore.mapping.engine.event.PreInsertEvent
 import org.grails.datastore.mapping.engine.event.PreUpdateEvent
 
-@Transactional
+@CompileStatic
 class TagGenerationService {
 
+    TagDataService tagDataService
+    BookTagDataService bookTagDataService
+
     @Listener(Book)
-    void afterSave(PostInsertEvent event) {
+    void afterInsert(PostInsertEvent event) {
         saveBookTag(event) //<1>
     }
 
     @Listener(Book)
     void afterUpdate(PostUpdateEvent event) {
-        saveBookTag(event) //<1>
-    }
-
-    @Listener(Book)
-    void beforeUpdate(PreUpdateEvent event) {
-        Book book = Book.load(((Book) event.entityObject).id) //<2>
-
-        if (book.isDirty('title')) { //<3>
-            Tag tag = Tag.findOrSaveWhere(name: book.getPersistentValue('title')) //<4>
-            BookTag bookTag = BookTag.findByBookAndTag(book, tag)
-            if (bookTag) bookTag.delete()
+        Long bookId = bookId(event)
+        if ( bookId && ((Book) event.entityObject).isDirty('title') ) {
+            saveBookTag(event) //<1>
         }
     }
 
     @Listener(Book)
-    void beforeDelete(PreDeleteEvent event) {
-        Book book = Book.load(((Book) event.entityObject).id)
-        List<BookTag> bookTags = BookTag.findAllByBook(book)
-        bookTags*.delete()
+    void beforeUpdate(PreUpdateEvent event) {
+        Long bookId = bookId(event)
+        if ( bookId && ((Book) event.entityObject).isDirty('title') ) {
+            deleteBookTags(bookId)
+        }
+
     }
 
-    private static saveBookTag(AbstractPersistenceEvent event) { //<1>
-        Book book = Book.load(((Book) event.entityObject).id)
-        Tag tag = Tag.findOrSaveWhere(name: book.title)
-        BookTag bookTag = BookTag.findByBookAndTag(book, tag)
+    @Listener(Book)
+    void beforeDelete(PreDeleteEvent event) {
+        Long bookId = bookId(event)
+        deleteBookTags(bookId)
+    }
 
-        if (!bookTag) {
-            BookTag.create(book, tag)
+    private Long bookId(AbstractPersistenceEvent event) {
+        if ( event.entityObject instanceof Book ) {
+            return ((Book) event.entityObject).id
+        }
+        null
+    }
+
+
+    private void deleteBookTags(Long bookId) {
+        if ( bookId ) {
+            bookTagDataService.findAllByBookId(bookId)?.each { BookTag bookTag ->
+                bookTagDataService.delete(bookTag.id)
+            }
+        }
+    }
+
+    private void saveBookTag(AbstractPersistenceEvent event) { //<1>
+        Long bookId = bookId(event)
+        if ( bookId ) {
+            String title = event.entityAccess.getProperty('title') as String
+            Tag tag = tagDataService.find(title)
+            if ( !tag ) {
+                tag = tagDataService.save(title)
+            }
+
+            BookTag bookTag = bookTagDataService.findByBookIdAndTag(bookId, tag)
+            if ( !bookTag ) {
+                bookTag = bookTagDataService.save(Book.load(bookId), tag)
+            }
         }
     }
 }

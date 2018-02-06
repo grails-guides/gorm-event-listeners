@@ -38,7 +38,6 @@ include::{sourceDir}/grails-app/domain/demo/Tag.groovy[]
 ----
 include::{sourceDir}/grails-app/domain/demo/BookTag.groovy[]
 ----
-<1> We provide a static convenience method to make it simpler to create a `BookTag` instance for a given `Book` and `Tag`.
 
 [source,groovy]
 .grails-app/domain/demo/Audit.groovy

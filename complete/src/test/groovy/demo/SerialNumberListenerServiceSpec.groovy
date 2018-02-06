@@ -6,13 +6,10 @@ import org.grails.datastore.mapping.engine.event.PreInsertEvent
 import org.springframework.test.annotation.Rollback
 import spock.lang.Specification
 
-class SerialNumberServiceSpec extends Specification implements ServiceUnitTest<SerialNumberService>, DataTest {
+class SerialNumberListenerServiceSpec extends Specification implements ServiceUnitTest<SerialNumberListenerService>, DataTest {
 
     def setupSpec() {
         mockDomain Book
-    }
-
-    def cleanup() {
     }
 
     @Rollback
@@ -21,9 +18,12 @@ class SerialNumberServiceSpec extends Specification implements ServiceUnitTest<S
         Book book = new Book(title: 'abc', author: 'abc', pages: 100)
 
         when:
-        service.setSerialNumber(new PreInsertEvent(dataStore, book))
+        service.serialNumberGeneratorService = Stub(SerialNumberGeneratorService) {
+            generate(_ as String) >> 'XXXX-5125'
+        }
+        service.onBookPreInsert(new PreInsertEvent(dataStore, book))
 
         then:
-        book.serialNumber
+        book.serialNumber == 'XXXX-5125'
     }
 }

@@ -1,20 +1,20 @@
 Our first listener will save `Audit` instances whenever a new `Book` is created, as well as when a book is updated and deleted.
 
-Create a new Grails service, named `LoggingService`:
+Create a new Grails service, named `AuditListenerService`:
 
 [source,bash]
 ----
-~ grails create-service demo.LoggingService
+~ grails create-service demo.AuditListenerService
 ----
 
 TIP: A Grails service is not required in order to write an event listener. You could place the same methods we are about to write in a Groovy class under `src/main/groovy`. However, the listener does need to be wired into the Spring context, so we would have to do that manually if we did not use a Grails service. We will use Grails services for convenience.
 
-Edit `LoggingService` as shown below:
+Edit `AuditListenerService` as shown below:
 
 [source,groovy]
-.grails-app/services/demo/LoggingService.groovy
+.grails-app/services/demo/AuditListenerService.groovy
 ----
-include::{sourceDir}/grails-app/services/demo/LoggingService.groovy[]
+include::{sourceDir}/grails-app/services/demo/AuditListenerService.groovy[]
 ----
 <1> The `@Listener` annotation will transform this method into a GORM event listener. When GORM fires a persistence event, any methods marked `@Listener` (and with the appropriate method signature) will be called. The annotation takes a value argument, which can be either a single domain class or a list of domain classes for which to "listen" - in this case, only events fired for `Book` instances will trigger this method.
 <2> The method signature indicates what event this method is interested in - e.g., an argument of type `PostInsertEvent` means this method will only be called after an object is saved.
@@ -62,3 +62,19 @@ Now, if we make a GET request to `/audit`, we should see the newly created `Audi
   }
 ]
 ----
+
+
+Write a unit and integration tests to verify that saving, updating or deleting a book leaves an audit trail.
+
+[source,groovy]
+.src/test/groovy/demo/AuditListenerServiceSpec.groovy
+----
+include::{sourceDir}/src/test/groovy/demo/AuditListenerServiceSpec.groovy[]
+----
+
+[source,groovy]
+.src/integration-test/groovy/demo/AuditListenerServiceIntegrationSpec.groovy
+----
+include::{sourceDir}/src/integration-test/groovy/demo/AuditListenerServiceIntegrationSpec.groovy[]
+----
+

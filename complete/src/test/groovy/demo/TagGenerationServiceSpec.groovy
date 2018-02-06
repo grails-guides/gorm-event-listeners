@@ -1,58 +1,73 @@
 package demo
 
-import grails.gorm.transactions.Rollback
-import grails.gorm.transactions.Transactional
-import org.grails.orm.hibernate.HibernateDatastore
-import org.grails.testing.GrailsUnitTest
-import org.springframework.transaction.PlatformTransactionManager
-import spock.lang.AutoCleanup
-import spock.lang.Shared
+import grails.testing.gorm.DataTest
+import grails.testing.services.ServiceUnitTest
+import org.grails.datastore.mapping.engine.event.PostInsertEvent
+import org.grails.datastore.mapping.engine.event.PostUpdateEvent
+import org.grails.datastore.mapping.engine.event.PreDeleteEvent
+import org.grails.datastore.mapping.engine.event.PreInsertEvent
+import org.grails.datastore.mapping.engine.event.PreUpdateEvent
 import spock.lang.Specification
 
-class TagGenerationServiceSpec extends Specification implements GrailsUnitTest { //<1>
+class TagGenerationServiceSpec extends Specification implements ServiceUnitTest<TagGenerationService>, DataTest { //<1>
 
-    @Shared
-    @AutoCleanup
-    HibernateDatastore hibernateDatastore //<2>
-    @Shared
-    PlatformTransactionManager transactionManager
-
-    void setupSpec() {
-        hibernateDatastore = applicationContext.getBean(HibernateDatastore) //<2>
-        transactionManager = hibernateDatastore.getTransactionManager()
+    def setupSpec() {
+        mockDomain Book
     }
 
-    @Override
-    Set<String> getIncludePlugins() {
-        return ["eventBus"] as Set //<3>
-    }
-
-
-    @Override
-    Closure doWithSpring() { //<4>
-        { ->
-            tagGenerationService TagGenerationService
-            datastore(HibernateDatastore, [Book, Tag, BookTag])
-        }
-    }
-
-    @Rollback
-    @Transactional
     def "tag and bookTag are saved after book is saved"() { //<5>
         given:
-        assert BookTag.count() == 0
+        service.tagDataService = Mock(TagDataService)
+        service.bookTagDataService = Mock(BookTagDataService)
 
         when:
-        Book book = new Book(title: "ABC", author: "123", pages: 123).save(flush: true)
+        Book book = new Book(title: 'Practical Grails 3', author: "Eric Helgeson", pages: 123).save()
+        service.afterInsert(new PostInsertEvent(dataStore, book))
+
         then:
-        BookTag.count() == 1
-
-        and:
-        BookTag bookTag = BookTag.first()
-
-        bookTag.tag.name == book.title
-        bookTag.book.id == book.id
-
+        1 * service.tagDataService.find('Practical Grails 3')
+        1 * service.tagDataService.save('Practical Grails 3')
+        1 * service.bookTagDataService.findByBookIdAndTag(_, _)
+        1 * service.bookTagDataService.save(_, _)
     }
 
+    def "tag and bookTag are saved after book is update"() { //<5>
+        given:
+        service.tagDataService = Mock(TagDataService)
+        service.bookTagDataService = Mock(BookTagDataService)
+
+        when:
+        Book book = new Book(title: 'Grails 3 Step by Step', author: "Cristian Olaru", pages: 50).save()
+        service.afterUpdate(new PostUpdateEvent(dataStore, book))
+
+        then:
+        1 * service.tagDataService.find('Grails 3 Step by Step')
+        1 * service.tagDataService.save('Grails 3 Step by Step')
+        1 * service.bookTagDataService.findByBookIdAndTag(_, _)
+        1 * service.bookTagDataService.save(_, _)
+    }
+
+    def "tags are fetched to be removed from book before the book is updated"() { //<5>
+        given:
+        service.bookTagDataService = Mock(BookTagDataService)
+
+        when:
+        Book book = new Book(title: 'Practical Grails 3', author: "Eric Helgeson", pages: 123).save()
+        service.beforeUpdate(new PreUpdateEvent(dataStore, book))
+
+        then:
+        1 * service.bookTagDataService.findAllByBookId(_)
+    }
+
+    def "tags are fetched to be removed from book before the book is deleted"() { //<5>
+        given:
+        service.bookTagDataService = Mock(BookTagDataService)
+
+        when:
+        Book book = new Book(title: 'Practical Grails 3', author: "Eric Helgeson", pages: 123).save()
+        service.beforeDelete(new PreDeleteEvent(dataStore, book))
+
+        then:
+        1 * service.bookTagDataService.findAllByBookId(_)
+    }
 }
