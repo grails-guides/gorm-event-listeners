@@ -1,8 +1,10 @@
 package demo
 
 import grails.rest.Resource
+import grails.compiler.GrailsCompileStatic
 
 @Resource(uri = '/audit', readOnly = true) //<1>
+@GrailsCompileStatic
 class Audit {
 
     String event

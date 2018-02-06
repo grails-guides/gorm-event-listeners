@@ -1,8 +1,10 @@
 package demo
 
 import grails.rest.Resource
+import grails.compiler.GrailsCompileStatic
 
 @Resource(uri = '/book') //<1>
+@GrailsCompileStatic
 class Book {
 
     String author
