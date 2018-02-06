@@ -55,7 +55,7 @@ Create the file `TagGenerationServiceSpec` under `src/test/groovy/demo`, and edi
 ----
 include::{sourceDir}/src/test/groovy/demo/TagGenerationServiceSpec.groovy[]
 ----
-<1> Because we will bbe wiring up GORM, thw Spring context and the event system ourselves, we will simply implement the basic `GrailsUnitTest` trait rather than the more specific `ServiceUnitTest` trait.
+<1> Because we will be wiring up GORM, the Spring context and the event system ourselves, we will simply implement the basic `GrailsUnitTest` trait rather than the more specific `ServiceUnitTest` trait.
 <2> We declare a `Shared` and `AutoCleanup` property for our datastore. In the `setupSpec` method, we obtain the `HibernateDatastore` instance contained within the `applicationContext` (provided by the `GrailsUnitTest` trait). We also set the `transactionManager` shared property we defined in our spec.
 <3> In order to enable the event system, we override the `getIncludePlugins` method to return the `eventBus` plugin. This will pull in any Spring configuration provided by the plugin into our test.
 <4> In our overridden `doWithSpring` method, we create the Spring beans for our `tagGenerationService` as well as our `dataStore`, instantiating the latter with a list of domain classes we need for our test. This will configure our service and GORM datastore in the Spring context of our test.
