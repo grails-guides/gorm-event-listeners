@@ -22,6 +22,8 @@ include::{sourceDir}/grails-app/services/demo/LoggingService.groovy[]
 <4> Again, the method signature here indicates that this method will be called for events of type `PostUpdateEvent` - after an object is updated.
 <5> The final methods listens for `PreDeleteEvent` - note that obviously there is not a "post-delete event", as there would be no object for which to fire an event after a deletion.
 
+NOTE: Keep in mind that you can name the methods as you want because Grails will only use the `@Listener` annotation and the method signature to match the events.
+
 Restart the application, and repeat the POST request from above:
 
 [source,bash]
