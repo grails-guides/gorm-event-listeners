@@ -18,12 +18,12 @@ class LoggingService {
     @Listener(Book)
     void afterUpdate(PostUpdateEvent event) { //<4>
         log.info "After book update..."
-        new Audit(event: "Book saved", bookId: ((Book) event.entityObject).id).save()
+        new Audit(event: "Book updated", bookId: ((Book) event.entityObject).id).save()
     }
 
     @Listener(Book)
     void beforeDelete(PreDeleteEvent event) { //<5>
         log.info "Before book delete..."
-        new Audit(event: "Book saved", bookId: ((Book) event.entityObject).id).save()
+        new Audit(event: "Book deleted", bookId: ((Book) event.entityObject).id).save()
     }
 }
