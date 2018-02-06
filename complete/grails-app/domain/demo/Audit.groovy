@@ -9,5 +9,7 @@ class Audit {
     Long bookId
 
     static constraints = {
+        event nullable: false, blank: false
+        bookId nullable: false
     }
 }

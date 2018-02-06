@@ -13,5 +13,7 @@ class BookTag {
     }
 
     static constraints = {
+        book nullable: false
+        tag nullable: false
     }
 }

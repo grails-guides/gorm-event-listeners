@@ -6,4 +6,8 @@ import grails.rest.Resource
 class Tag {
 
     String name
+
+    static constraints = {
+        name nullable: false
+    }
 }

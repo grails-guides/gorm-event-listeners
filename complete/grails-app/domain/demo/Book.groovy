@@ -12,5 +12,8 @@ class Book {
 
     static constraints = {
         serialNumber nullable: true
+        title nullable: false
+        pages min: 0
+        serialNumber nullable: true
     }
 }
