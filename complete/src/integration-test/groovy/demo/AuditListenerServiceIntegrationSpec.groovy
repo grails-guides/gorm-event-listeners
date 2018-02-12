@@ -8,10 +8,8 @@ import spock.util.concurrent.PollingConditions
 @Integration
 class AuditListenerServiceIntegrationSpec extends Specification {
 
-    BookTagDataService bookTagDataService
     BookDataService bookDataService
     AuditDataService auditDataService
-    TagDataService tagDataService
 
     void "saving a Book causes an Audit instance to be saved"() {
         when:
@@ -22,7 +20,6 @@ class AuditListenerServiceIntegrationSpec extends Specification {
         then:
         book
         book.id
-        bookTagDataService.count() == old(bookTagDataService.count()) + 1
         conditions.eventually {
             assert auditDataService.count() == old(auditDataService.count()) + 1
         }
@@ -38,9 +35,6 @@ class AuditListenerServiceIntegrationSpec extends Specification {
         book = bookDataService.update(book.id, 'Grails 3')
 
         then: 'a new audit instance is created'
-
-        and: 'old bookTags were deleted and a new booktag replaced it'
-        //bookTagDataService.count() == old(bookTagDataService.count()) // TODO
         conditions.eventually {
             assert auditDataService.count() == old(auditDataService.count()) + 1
         }
@@ -54,7 +48,6 @@ class AuditListenerServiceIntegrationSpec extends Specification {
         lastAudit.bookId == book.id
 
         when: 'A book is deleted'
-        bookTagDataService.deleteByBookId(book.id) // TODO
         bookDataService.delete(book.id)
 
         then: 'a new audit instance is created'
@@ -62,16 +55,19 @@ class AuditListenerServiceIntegrationSpec extends Specification {
             assert auditDataService.count() == old(auditDataService.count()) + 1
         }
 
+        when:
+        lastAudit = this.lastAudit()
+
+        then:
+        lastAudit.event == 'Book deleted'
+        lastAudit.bookId == book.id
+
         cleanup:
         auditDataService.deleteByBookId(book.id)
-        tagDataService.delete(tagDataService.find('abc')?.id)
-        tagDataService.delete(tagDataService.find('Changed Title')?.id)
     }
 
     Audit lastAudit() {
         int offset = Math.max(((auditDataService.count() as int) - 1), 0)
         auditDataService.findAll([max: 1, offset: offset]).first()
     }
-
-
 }

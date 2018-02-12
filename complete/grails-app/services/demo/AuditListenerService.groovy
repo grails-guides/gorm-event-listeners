@@ -8,9 +8,6 @@ import org.grails.datastore.mapping.engine.event.AbstractPersistenceEvent
 import org.grails.datastore.mapping.engine.event.PostDeleteEvent
 import org.grails.datastore.mapping.engine.event.PostInsertEvent
 import org.grails.datastore.mapping.engine.event.PostUpdateEvent
-import org.grails.datastore.mapping.engine.event.PreDeleteEvent
-import org.grails.datastore.mapping.engine.event.PreInsertEvent
-import org.grails.datastore.mapping.engine.event.PreUpdateEvent
 
 @Slf4j
 @CompileStatic
@@ -20,7 +17,7 @@ class AuditListenerService {
 
     Long bookId(AbstractPersistenceEvent event) {
         if ( event.entityObject instanceof Book ) {
-            return ((Book) event.entityObject).id // <3>
+            return ((Book) event.entityObject).id // <2>
         }
         null
     }
@@ -35,7 +32,7 @@ class AuditListenerService {
     }
 
     @Subscriber // <1>
-    void afterUpdate(PostUpdateEvent event) {
+    void afterUpdate(PostUpdateEvent event) { // <3>
         Long bookId = bookId(event)
         if ( bookId ) {
             log.info "After book update..."
@@ -45,7 +42,7 @@ class AuditListenerService {
 
     @Subscriber // <1>
     void afterDelete(PostDeleteEvent event) {
-        log.info 'beforeInsert...'
+        log.info 'after book delete ...'
         Long bookId = bookId(event)
         if ( bookId ) {
             log.info "Before book delete..."

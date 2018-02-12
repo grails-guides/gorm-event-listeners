@@ -17,7 +17,9 @@ class AuditListenerServiceSpec extends Specification implements ServiceUnitTest<
         given:
         service.auditDataService = Mock(AuditDataService)
 
-        Book book = new Book(title: 'Practical Grails 3', author: 'Eric Helgeson', pages: 1).save() //<3>
+        Book book = new Book(title: 'Practical Grails 3',
+                author: 'Eric Helgeson',
+                pages: 1).save() //<3>
         PostInsertEvent event = new PostInsertEvent(dataStore, book) //<4>
 
         when:
@@ -31,7 +33,9 @@ class AuditListenerServiceSpec extends Specification implements ServiceUnitTest<
         given:
         service.auditDataService = Mock(AuditDataService)
 
-        Book book = new Book(title: 'Practical Grails 3', author: 'Eric Helgeson', pages: 1).save() //<3>
+        Book book = new Book(title: 'Practical Grails 3',
+                author: 'Eric Helgeson',
+                pages: 1).save() //<3>
         PostUpdateEvent event = new PostUpdateEvent(dataStore, book) //<4>
 
         when:
@@ -45,7 +49,9 @@ class AuditListenerServiceSpec extends Specification implements ServiceUnitTest<
         given:
         service.auditDataService = Mock(AuditDataService)
 
-        Book book = new Book(title: 'Practical Grails 3', author: 'Eric Helgeson', pages: 1).save() //<3>
+        Book book = new Book(title: 'Practical Grails 3',
+                author: 'Eric Helgeson',
+                pages: 1).save() //<3>
         PostDeleteEvent event = new PostDeleteEvent(dataStore, book) //<4>
 
         when:

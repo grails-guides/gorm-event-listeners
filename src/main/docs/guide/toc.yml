@@ -7,16 +7,10 @@ gettingStarted:
 writingTheApp:
   title: Writing the Application
   dataServices: Data Services
-runningTheApp:
-  title: Running the Application
-listeners:
-  title: Creating Listeners
-entityAccess:
-  title: Setting/getting Properties
-moreListeners:
-  title: More Listener Features
-testing:
-  title: Testing
+  async: Listening to events from GORM asynchronously
+  sync: Listening to events from GORM synchronously
+runningTheTests:
+  title: Running the Tests
 conclusion:
   title: Conclusion
 helpWithGrails: 

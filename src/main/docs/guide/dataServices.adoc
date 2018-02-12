@@ -9,8 +9,6 @@ Create the following files under `grails-app/services/demo/`:
 ```
 ~ touch AuditDataService.groovy
 ~ touch BookDataService.groovy
-~ touch TagDataService.groovy
-~ touch BookTagDataService.groovy
 ```
 
 Edit the files as shown below:
@@ -28,18 +26,3 @@ include::{sourceDir}/grails-app/services/demo/BookDataService.groovy[]
 ----
 
 Notice that the two Data Services above are *interfaces*, without any implementation of our own. This means that GORM will supply its default implementation for each of the methods in the class. However, there may be times when you need to supply some custom logic within a Data Service method. To accomplish this, we can define our Data Service as an *abstract class*, and create non-abstract methods to handle our custom code (any *abstract* methods will still be implemented by GORM).
-
-Edit the next two files, and note the use of abstract classes.
-
-[source,groovy]
-.grails-app/services/demo/TagDataService.groovy
-----
-include::{sourceDir}/grails-app/services/demo/TagDataService.groovy[]
-----
-
-[source,groovy]
-.grails-app/services/demo/BookTagDataService.groovy
-----
-include::{sourceDir}/grails-app/services/demo/BookTagDataService.groovy[]
-----
-
