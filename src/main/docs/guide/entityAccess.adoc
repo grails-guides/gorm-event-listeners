@@ -15,6 +15,8 @@ Create a new Grails service, called `SerialNumberGeneratorService`:
 include::{sourceDir}/grails-app/services/demo/SerialNumberGeneratorService.groovy[]
 ----
 
+<1> We use the `take` method to safely grab the first 4 characters from the title (`take` will not throw an `IndexOutOfBoundsException` if the string length is shorter than the desired range)
+
 Then, create another service `SerialNumberListenerService
 
 [source,bash]
@@ -28,7 +30,7 @@ Then, create another service `SerialNumberListenerService
 include::{sourceDir}/grails-app/services/demo/SerialNumberListenerService.groovy[]
 ----
 
-<1> We retrieve the `title` property from the domain object using the `event.entityAccess.getProperty()` method. We use the `take` method to safely grab the first 4 characters from the title (`take` will not throw an `IndexOutOfBoundsException` if the string length is shorter than the desired range)
+<1> We retrieve the `title` property from the domain object using the `event.entityAccess.getProperty()` method. 
 <2> To set the `serialNumber` property on the domain object, we use the `event.entityAccess.setProperty()` method.
 
 WARNING: You may wonder why couldn't simply cast the `event.entityObject` as a `Book` (as we did in the previous listener) and then set the `serialNumber` property directly. The reason for avoiding that approach here is that the direct assignment would itself trigger another event, potentially causing the same event listener to fire multiple times.  By using the `entityAccess` object, any changes we make will be synchronized with the current persistence session, and will be saved at the same time as the original object.
