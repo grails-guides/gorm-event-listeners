@@ -27,9 +27,9 @@ class TitleListenerService {
     }
 
     void populateSerialNumber(AbstractPersistenceEvent event) {
-        String title = event.entityAccess.getProperty('title') as String // <3>
+        String title = event.entityAccess.getProperty('title') as String // <4>
         String serialNumber = serialNumberGeneratorService.generate(title)
-        event.entityAccess.setProperty('serialNumber', serialNumber) //<4>
+        event.entityAccess.setProperty('serialNumber', serialNumber) //<5>
     }
 
     void populateFriendlyUrl(AbstractPersistenceEvent event) {
