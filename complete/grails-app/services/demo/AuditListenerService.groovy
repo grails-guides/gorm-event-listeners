@@ -25,7 +25,7 @@ class AuditListenerService {
         null
     }
 
-    @Listener(Book) // <1>
+    @Subscriber // <1>
     void afterInsert(PostInsertEvent event) {
         Long bookId = bookId(event)
         if ( bookId ) {
@@ -34,7 +34,7 @@ class AuditListenerService {
         }
     }
 
-    @Listener(Book) // <1>
+    @Subscriber // <1>
     void afterUpdate(PostUpdateEvent event) {
         Long bookId = bookId(event)
         if ( bookId ) {
@@ -43,7 +43,7 @@ class AuditListenerService {
         }
     }
 
-    @Listener(Book) // <1>
+    @Subscriber // <1>
     void afterDelete(PostDeleteEvent event) {
         log.info 'beforeInsert...'
         Long bookId = bookId(event)

@@ -15,13 +15,17 @@ class AuditListenerServiceIntegrationSpec extends Specification {
 
     void "saving a Book causes an Audit instance to be saved"() {
         when:
+        def conditions = new PollingConditions(timeout: 30)
+
         Book book = bookDataService.save('Practical Grails 3', 'Eric Helgeson', 1)
 
         then:
         book
         book.id
         bookTagDataService.count() == old(bookTagDataService.count()) + 1
-        auditDataService.count() == old(auditDataService.count()) + 1
+        conditions.eventually {
+            assert auditDataService.count() == old(auditDataService.count()) + 1
+        }
 
         when:
         Audit lastAudit = this.lastAudit()
@@ -34,10 +38,12 @@ class AuditListenerServiceIntegrationSpec extends Specification {
         book = bookDataService.update(book.id, 'Grails 3')
 
         then: 'a new audit instance is created'
-        auditDataService.count() == old(auditDataService.count()) + 1
 
         and: 'old bookTags were deleted and a new booktag replaced it'
         //bookTagDataService.count() == old(bookTagDataService.count()) // TODO
+        conditions.eventually {
+            assert auditDataService.count() == old(auditDataService.count()) + 1
+        }
 
         when:
         lastAudit = this.lastAudit()
@@ -52,7 +58,9 @@ class AuditListenerServiceIntegrationSpec extends Specification {
         bookDataService.delete(book.id)
 
         then: 'a new audit instance is created'
-        auditDataService.count() == old(auditDataService.count()) + 1
+        conditions.eventually {
+            assert auditDataService.count() == old(auditDataService.count()) + 1
+        }
 
         cleanup:
         auditDataService.deleteByBookId(book.id)
