@@ -1,4 +1,4 @@
-In order to handle the persistence logic in our application (e.g., updating and deleting books and tags), we will create several (http://gorm.grails.org/latest/hibernate/manual/index.html#dataServices[GORM Data Services].
+In order to handle the persistence logic in our application (e.g., updating and deleting books and tags), we will create several http://gorm.grails.org/latest/hibernate/manual/index.html#dataServices[GORM Data Services].
 
 Data Services allow us to centralize the data access and persistence functions of our application. Rather than calling dynamic finders or updating our domain objects directly, we can define the kinds of queries and persistence actions that we need in an interface (or abstract class), allowing GORM to provide the implementation.  Data Services are transactional and can be injected into other services or controllers just like any other Spring Bean. All the same GORM "magic" is at work - e.g., within a Service we can specify a method such as `Book findByTitleAndPagesGreaterThan(String title, Long pages)`, and GORM will provide the same sort of implementation that you would get using a dynamic finder with the same name.
 

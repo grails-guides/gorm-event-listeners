@@ -1,4 +1,4 @@
-Our first listener will save `Audit` instances whenever a new `Book` is created, as well as when a `Book is updated and deleted.
+Our first listener will save `Audit` instances whenever a new `Book` is created, as well as when a `Book` is updated and deleted.
 
 Create a new Grails service, named `AuditListenerService`:
 
@@ -22,7 +22,7 @@ include::{sourceDir}/grails-app/services/demo/AuditListenerService.groovy[]
 
 NOTE: Keep in mind that the method `bookId` will return null for any classes but `Book` entities. Thus, the previous class creates `Audit` instances for `Book` insert, update or delete operations.
 
-Write a unit to verify the `auditDataService` is invoked whenever a `Book` event of type `PostInsertEvent`, `PostUpdateEvent` or `PostDeleteEvent` is received. The next illustrates another big advantage of GORM Data Services. They create easy to test scenarios. Being interfaces they are easy to Mock.
+Write a unit test to verify the `auditDataService` is invoked whenever a `Book` event of type `PostInsertEvent`, `PostUpdateEvent` or `PostDeleteEvent` is received. The next illustrates another big advantage of GORM Data Services. They create easy to test scenarios. Being interfaces they are easy to Mock.
 
 [source,groovy]
 .src/test/groovy/demo/AuditListenerServiceSpec.groovy
