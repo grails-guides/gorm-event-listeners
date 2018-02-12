@@ -44,7 +44,7 @@ class AuditListenerService {
     void afterDelete(PostDeleteEvent event) {
         Long bookId = bookId(event)
         if ( bookId ) {
-            log.info 'after book delete ...'
+            log.info 'After book delete ...'
             auditDataService.save('Book deleted', bookId)
         }
     }
