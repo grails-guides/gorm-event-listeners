@@ -26,7 +26,7 @@ class AuditListenerServiceSpec extends Specification implements ServiceUnitTest<
         service.afterInsert(event) //<5>
 
         then:
-        1 * service.auditDataService.save(_, _)
+        1 * service.auditDataService.save(_, _) //<6>
     }
 
     void "Book.PostUpdateEvent triggers auditDataService.save"(){
@@ -42,7 +42,7 @@ class AuditListenerServiceSpec extends Specification implements ServiceUnitTest<
         service.afterUpdate(event) //<5>
 
         then:
-        1 * service.auditDataService.save(_, _)
+        1 * service.auditDataService.save(_, _) //<6>
     }
 
     void "Book.PostDeleteEvent triggers auditDataService.save"(){
@@ -58,6 +58,6 @@ class AuditListenerServiceSpec extends Specification implements ServiceUnitTest<
         service.afterDelete(event) //<5>
 
         then:
-        1 * service.auditDataService.save(_, _)
+        1 * service.auditDataService.save(_, _) //<6>
     }
 }
