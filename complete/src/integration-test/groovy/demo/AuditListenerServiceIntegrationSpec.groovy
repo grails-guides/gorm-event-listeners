@@ -1,7 +1,6 @@
 package demo
 
 import grails.testing.mixin.integration.Integration
-import grails.transaction.Rollback
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
