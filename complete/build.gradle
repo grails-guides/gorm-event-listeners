@@ -67,7 +67,7 @@ dependencies {
     testCompile "org.grails.plugins:geb"
     testCompile "org.mockito:mockito-core"
     testCompile "org.grails:grails-web-testing-support"
-    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
+    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.35.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
     testCompile "org.seleniumhq.selenium:selenium-remote-driver:3.141.59"
     testCompile "org.seleniumhq.selenium:selenium-api:3.141.59"
