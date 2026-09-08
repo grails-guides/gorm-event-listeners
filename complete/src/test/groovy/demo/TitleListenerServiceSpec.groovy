@@ -26,7 +26,7 @@ class TitleListenerServiceSpec extends Specification implements ServiceUnitTest<
             generate(_ as String) >> 'XXXX-5125'
         }
 
-        service.onBookPreInsert(new PreInsertEvent(dataStore, book))
+        service.onBookPreInsert(new PreInsertEvent(datastore, book))
 
         then:
         book.serialNumber == 'XXXX-5125'

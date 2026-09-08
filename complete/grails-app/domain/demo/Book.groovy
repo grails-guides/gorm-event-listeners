@@ -16,6 +16,5 @@ class Book {
         friendlyUrl nullable: true
         title nullable: false
         pages min: 0
-        serialNumber nullable: true
     }
 }

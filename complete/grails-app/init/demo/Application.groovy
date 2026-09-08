@@ -1,8 +1,9 @@
 package demo
 
+import groovy.transform.CompileStatic
+
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
-import groovy.transform.CompileStatic
 
 @CompileStatic
 class Application extends GrailsAutoConfiguration {
