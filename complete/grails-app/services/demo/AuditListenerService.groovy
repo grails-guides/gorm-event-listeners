@@ -1,7 +1,6 @@
 package demo
 
 import grails.events.annotation.Subscriber
-import grails.events.annotation.gorm.Listener
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.grails.datastore.mapping.engine.event.AbstractPersistenceEvent

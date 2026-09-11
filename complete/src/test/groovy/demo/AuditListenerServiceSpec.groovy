@@ -20,7 +20,7 @@ class AuditListenerServiceSpec extends Specification implements ServiceUnitTest<
         Book book = new Book(title: 'Practical Grails 3',
                 author: 'Eric Helgeson',
                 pages: 1).save() //<3>
-        PostInsertEvent event = new PostInsertEvent(dataStore, book) //<4>
+        PostInsertEvent event = new PostInsertEvent(datastore, book) //<4>
 
         when:
         service.afterInsert(event) //<5>
@@ -36,7 +36,7 @@ class AuditListenerServiceSpec extends Specification implements ServiceUnitTest<
         Book book = new Book(title: 'Practical Grails 3',
                 author: 'Eric Helgeson',
                 pages: 1).save() //<3>
-        PostUpdateEvent event = new PostUpdateEvent(dataStore, book) //<4>
+        PostUpdateEvent event = new PostUpdateEvent(datastore, book) //<4>
 
         when:
         service.afterUpdate(event) //<5>
@@ -52,7 +52,7 @@ class AuditListenerServiceSpec extends Specification implements ServiceUnitTest<
         Book book = new Book(title: 'Practical Grails 3',
                 author: 'Eric Helgeson',
                 pages: 1).save() //<3>
-        PostDeleteEvent event = new PostDeleteEvent(dataStore, book) //<4>
+        PostDeleteEvent event = new PostDeleteEvent(datastore, book) //<4>
 
         when:
         service.afterDelete(event) //<5>
