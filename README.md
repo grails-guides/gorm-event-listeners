@@ -27,7 +27,7 @@ Then browse to http://localhost:8080/
 
 | Branch | Grails version |
 |---|---|
-| `grails8` | Apache Grails 8.0.0-M5 |
+| `grails8` | Apache Grails 8.0.0 |
 | `grails4` | Apache Grails 4 (published guide) |
 
 ## Guide prose
